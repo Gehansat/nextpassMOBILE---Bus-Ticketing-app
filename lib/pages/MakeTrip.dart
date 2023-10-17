@@ -7,7 +7,17 @@ class MakeTrip extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text("Make Trip"),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Text("Start Your Journey!",
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
