@@ -11,7 +11,7 @@ class Loginoption extends StatelessWidget {
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Explore, Connect,\nTravel Together!",
+            const Text("Explore, Connect,\nTravel Together!",
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -20,9 +20,9 @@ class Loginoption extends StatelessWidget {
             const SizedBox(height: 50),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Color(0xff0048FF),
+                primary: const Color(0xff0048FF),
                 onPrimary: Colors.white,
-                fixedSize: Size(245, 60),
+                fixedSize: const Size(245, 60),
                 textStyle: const TextStyle(
                   fontSize: 20
                 ),
@@ -33,24 +33,24 @@ class Loginoption extends StatelessWidget {
                 );
 
               },
-              child: Text('Local Passenger'),
+              child: const Text('Local Passenger'),
             ),
             const SizedBox(height: 30),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Color(0xff0048FF),
+                primary: const Color(0xff0048FF),
                 onPrimary: Colors.white,
-                fixedSize: Size(245, 60),
+                fixedSize: const Size(245, 60),
                 textStyle: const TextStyle(
                     fontSize: 20
                 ),
               ),
               onPressed: () {
                 Navigator.of(context).push(
-                  CupertinoPageRoute(builder: (ctx) => Loginoption()),
+                  CupertinoPageRoute(builder: (ctx) => const Loginoption()),
                 );
               },
-              child: Text('Foreginer Passenger'),
+              child: const Text('Foreigner Passenger'),
             ),
           ],
         )
