@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "688015933676",
+    "project_id": "nextpass-51ccb",
+    "storage_bucket": "nextpass-51ccb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688015933676:android:1c65923a70431b8a1365c9",
+        "android_client_info": {
+          "package_name": "com.example.nextpass"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSdTuGlwpLH5co4uKftyAVScRd3BhYLEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
