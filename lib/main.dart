@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nextpass/pages/LoginOption.dart';
 import 'package:nextpass/pages/splashscreen.dart';
 
 void main() {
