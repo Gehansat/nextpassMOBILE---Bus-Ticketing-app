@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nextpass/pages/LoginOption.dart';
+import 'package:nextpass/pages/splashscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,9 +15,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(debugShowCheckedModeBanner: false,
       title: 'Next Pass',
       theme: ThemeData(
-
-      ),
-      home: const Loginoption(),
+      textTheme: const TextTheme(
+    // Set the font family for your main text here
+        bodyText1: TextStyle(fontFamily: 'Poppins', fontSize: 16),
+        bodyText2: TextStyle(fontFamily: 'Poppins', fontSize: 14),
+          ),
+        ),
+      home: const SplashScreen(),
     );
   }
 }

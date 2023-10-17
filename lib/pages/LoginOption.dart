@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Loginoption extends StatelessWidget {
@@ -5,9 +6,54 @@ class Loginoption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('Kaveen'),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Explore, Connect,\nTravel Together!",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 50),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: const Color(0xff0048FF),
+                onPrimary: Colors.white,
+                fixedSize: const Size(245, 60),
+                textStyle: const TextStyle(
+                  fontSize: 20
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(builder: (ctx) => Loginoption()),
+                );
+
+              },
+              child: const Text('Local Passenger'),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: const Color(0xff0048FF),
+                onPrimary: Colors.white,
+                fixedSize: const Size(245, 60),
+                textStyle: const TextStyle(
+                    fontSize: 20
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(builder: (ctx) => const Loginoption()),
+                );
+              },
+              child: const Text('Foreigner Passenger'),
+            ),
+          ],
+        )
       ),
     );
   }
