@@ -1,43 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nextpass/pages/Passtype.dart';
 
-class UserDetails {
-  String name;
-  String email;
-  String visaNumber;
-  String contactNumber;
-  DateTime? arrivingDate;
-  DateTime? leavingDate;
-
-  UserDetails({
-    required this.name,
-    required this.email,
-    required this.visaNumber,
-    required this.contactNumber,
-    this.arrivingDate,
-    this.leavingDate,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'email': email,
-      'visaNumber': visaNumber,
-      'contactNumber': contactNumber,
-      'arrivingDate': arrivingDate,
-      'leavingDate': leavingDate,
-    };
-  }
-}
-
-class DetailsPage extends StatefulWidget {
+class UserDetailsPage extends StatefulWidget {
   @override
-  _DetailsPageState createState() => _DetailsPageState();
+  _UserDetailsPageState createState() => _UserDetailsPageState();
 }
 
-class _DetailsPageState extends State<DetailsPage> {
+class _UserDetailsPageState extends State<UserDetailsPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -122,12 +94,10 @@ class _DetailsPageState extends State<DetailsPage> {
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   await addUserDetailsToFirebase();
-                Navigator.of(context).push(
-                  CupertinoPageRoute(builder: (ctx) => Passtype()),
-                );
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(builder: (ctx) => TravelPassPage()),);
                 }
               },
-              
               child: Text('Save User Details'),
             ),
           ],
@@ -147,7 +117,8 @@ class _DetailsPageState extends State<DetailsPage> {
       leavingDate: leavingDate,
     );
 
-    await userDetailsCollection.add(userDetails.toMap());
+    // Save user details to Firestore
+    final userDocRef = await userDetailsCollection.add(userDetails.toMap());
 
     // Show a success message
     ScaffoldMessenger.of(context).showSnackBar(
@@ -202,5 +173,34 @@ class _DetailsPageState extends State<DetailsPage> {
         ),
       ],
     );
+  }
+}
+
+class UserDetails {
+  final String name;
+  final String email;
+  final String visaNumber;
+  final String contactNumber;
+  final DateTime? arrivingDate;
+  final DateTime? leavingDate;
+
+  UserDetails({
+    required this.name,
+    required this.email,
+    required this.visaNumber,
+    required this.contactNumber,
+    this.arrivingDate,
+    this.leavingDate,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'visaNumber': visaNumber,
+      'contactNumber': contactNumber,
+      'arrivingDate': arrivingDate?.toUtc(),
+      'leavingDate': leavingDate?.toUtc(),
+    };
   }
 }

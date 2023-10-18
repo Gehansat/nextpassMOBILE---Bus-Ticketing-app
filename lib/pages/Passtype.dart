@@ -2,19 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nextpass/pages/Detailspage.dart';
 import 'package:nextpass/pages/Payment.dart';
-
-class Passtype extends StatelessWidget {
-  const Passtype({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Travel Pass Selection",
-      home: TravelPassPage(),
-    );
-  }
-}
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TravelPassPage extends StatefulWidget {
   @override
@@ -30,7 +18,6 @@ class _TravelPassPageState extends State<TravelPassPage> {
       appBar: AppBar(
         title: Text("Select Travel Pass"),
         centerTitle: true,
-        
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -40,8 +27,7 @@ class _TravelPassPageState extends State<TravelPassPage> {
             SelectablePassCard(
               name: "Travel Buddy Pass",
               cost: "\$20.00",
-              previousUsers: "120 users",
-              note: "Valid for one day",
+              days: "Valid for one day",
               isSelected: selectedPass == "Travel Buddy Pass",
               onTap: () {
                 setState(() {
@@ -53,8 +39,7 @@ class _TravelPassPageState extends State<TravelPassPage> {
             SelectablePassCard(
               name: "Travel Lite Pass",
               cost: "\$45.00",
-              previousUsers: "280 users",
-              note: "Valid for three days",
+              days: "Valid for three days",
               isSelected: selectedPass == "Travel Lite Pass",
               onTap: () {
                 setState(() {
@@ -66,56 +51,94 @@ class _TravelPassPageState extends State<TravelPassPage> {
             SelectablePassCard(
               name: "Travel Max Pass",
               cost: "\$80.00",
-              previousUsers: "450 users",
-              note: "Valid for five days",
+              days: "Valid for five days",
               isSelected: selectedPass == "Travel Max Pass",
               onTap: () {
                 setState(() {
                   selectedPass = "Travel Max Pass";
                 });
               },
+            ),          
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                if (selectedPass != null) {
+                  // Save the selected package details to Firestore
+                  saveSelectedPackageToFirebase(selectedPass!);
+                  print("Success");
+                 
+                } else {
+                  // Handle unselected state or show an error message
+                }
+              },
+              child: Text("Confirm Package"),
             ),
             SizedBox(height: 20),
-           ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetailsPage(),
-      ),
-    );
-  },
-  child: Text("Back"),
-),
-             SizedBox(height: 20),
-     ElevatedButton(
-  onPressed: () {
-    Navigator.of(context).push(
-      CupertinoPageRoute(builder: (ctx) => Payment()),
-    );
-  },
-  child: Text("Confirm Package"),
-)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Payment(),
+                  ),
+                );
+              },
+              child: Text("Next"),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  // Function to save the selected package to Firebase Firestore
+  void saveSelectedPackageToFirebase(String selectedPackage) {
+    final userPackageCollection = FirebaseFirestore.instance.collection('userPackages');
+
+    // Save the selected package details
+    userPackageCollection.add({
+      'SelectedPackage': selectedPackage,
+      'Cost': getPackageCost(selectedPackage),
+      'Days': getPackageDays(selectedPackage),
+    });
+  }
+
+  // Function to get the cost for a specific package
+  String getPackageCost(String package) {
+    if (package == "Travel Buddy Pass") {
+      return "\$20.00";
+    } else if (package == "Travel Lite Pass") {
+      return "\$45.00";
+    } else if (package == "Travel Max Pass") {
+      return "\$80.00";
+    }
+    return "";
+  }
+
+  // Function to get the days for a specific package
+  String getPackageDays(String package) {
+    if (package == "Travel Buddy Pass") {
+      return "Valid for one day";
+    } else if (package == "Travel Lite Pass") {
+      return "Valid for three days";
+    } else if (package == "Travel Max Pass") {
+      return "Valid for five days";
+    }
+    return "";
   }
 }
 
 class SelectablePassCard extends StatelessWidget {
   final String name;
   final String cost;
-  final String previousUsers;
-  final String note;
+  final String days;
   final bool isSelected;
   final VoidCallback onTap;
 
   SelectablePassCard({
     required this.name,
     required this.cost,
-    required this.previousUsers,
-    required this.note,
+    required this.days,
     required this.isSelected,
     required this.onTap,
   });
@@ -140,9 +163,7 @@ class SelectablePassCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: isSelected
-                      ? Colors.white
-                      : null, // Text color for selected card
+                  color: isSelected ? Colors.white : null,
                 ),
               ),
               SizedBox(height: 10),
@@ -152,12 +173,7 @@ class SelectablePassCard extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                "Previous Users: $previousUsers",
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 10),
-              Text(
-                note,
+                days,
                 style: TextStyle(fontSize: 16),
               ),
             ],
