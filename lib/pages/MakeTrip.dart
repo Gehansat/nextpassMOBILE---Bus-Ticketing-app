@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
 
 class MakeTrip extends StatefulWidget {
   const MakeTrip({Key? key}) : super(key: key);
@@ -11,6 +12,7 @@ class MakeTrip extends StatefulWidget {
 class _MakeTripState extends State<MakeTrip> {
   String? selectedStartingPoint = 'Starting Point';
   String? selectedEndingPoint = 'Ending Point';
+  int? fee; // to store the randomly retrieved fee
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +40,6 @@ class _MakeTripState extends State<MakeTrip> {
                   width: 2.0,
                 ),
               ),
-
-              // Retrieve data from Firestore ==============================
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance.collection('busholts').snapshots(),
                 builder: (context, snapshot) {
@@ -61,7 +61,6 @@ class _MakeTripState extends State<MakeTrip> {
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    // ======= first dropdown ==============================
                     children: [
                       DropdownButton<String>(
                         value: selectedStartingPoint,
@@ -77,8 +76,6 @@ class _MakeTripState extends State<MakeTrip> {
                           );
                         }).toList(),
                       ),
-
-                      // ======= second dropdown =============================
                       DropdownButton<String>(
                         value: selectedEndingPoint,
                         onChanged: (String? newValue) {
@@ -108,14 +105,44 @@ class _MakeTripState extends State<MakeTrip> {
                     fontSize: 20
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0), // Adjust the radius value as needed
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                // Generate a random index to select a fee from Firestore
+                int randomIndex = Random().nextInt(10); // Assuming 10 documents in 'fareSE'
+
+                // Retrieve a random fee from Firestore
+                FirebaseFirestore.instance
+                    .collection('fareSE')
+                    .orderBy(FieldPath.documentId)
+                    .startAfter([randomIndex.toString()]) // Use the startAfter method
+                    .limit(1)
+                    .get()
+                    .then((QuerySnapshot querySnapshot) {
+                  if (querySnapshot.docs.isNotEmpty) {
+                    final doc = querySnapshot.docs.first;
+                    if (doc.data() is Map && (doc.data() as Map).containsKey('fee')) {
+                      setState(() {
+                        fee = doc['fee'] as int;
+                      });
+                    } else {
+                      setState(() {
+                        fee = null;
+                      });
+                    }
+                  } else {
+                    setState(() {
+                      fee = null;
+                    });
+                  }
+                });
+
+              },
               child: const Text('Calculate Fee'),
             ),
             const SizedBox(height: 20),
-            Text("Your Fee is: ")
+            Text("Your Fee is: ${fee ?? 'Select starting and ending points'}")
           ],
         ),
       ),
