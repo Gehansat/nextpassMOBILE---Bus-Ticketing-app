@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nextpass/main.dart';
+import 'package:nextpass/pages/Detailspage.dart';
 import 'package:nextpass/pages/Home.dart';
 
 class Loginoption extends StatelessWidget {
@@ -48,7 +50,7 @@ class Loginoption extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.of(context).push(
-                  CupertinoPageRoute(builder: (ctx) => const Loginoption()),
+                  CupertinoPageRoute(builder: (ctx) => Detailspage()),
                 );
               },
               child: const Text('Foreigner Passenger'),
