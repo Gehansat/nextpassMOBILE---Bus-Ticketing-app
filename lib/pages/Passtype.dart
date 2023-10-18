@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nextpass/pages/Detailspage.dart';
 import 'package:nextpass/pages/Payment.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TravelPassPage extends StatefulWidget {
   @override
@@ -32,6 +29,7 @@ class _TravelPassPageState extends State<TravelPassPage> {
               onTap: () {
                 setState(() {
                   selectedPass = "Travel Buddy Pass";
+                  navigateToPaymentPage(selectedPass, "\$20.00");
                 });
               },
             ),
@@ -44,6 +42,7 @@ class _TravelPassPageState extends State<TravelPassPage> {
               onTap: () {
                 setState(() {
                   selectedPass = "Travel Lite Pass";
+                  navigateToPaymentPage(selectedPass, "\$45.00");
                 });
               },
             ),
@@ -56,34 +55,9 @@ class _TravelPassPageState extends State<TravelPassPage> {
               onTap: () {
                 setState(() {
                   selectedPass = "Travel Max Pass";
+                  navigateToPaymentPage(selectedPass, "\$80.00");
                 });
               },
-            ),          
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (selectedPass != null) {
-                  // Save the selected package details to Firestore
-                  saveSelectedPackageToFirebase(selectedPass!);
-                  print("Success");
-                 
-                } else {
-                  // Handle unselected state or show an error message
-                }
-              },
-              child: Text("Confirm Package"),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Payment(),
-                  ),
-                );
-              },
-              child: Text("Next"),
             ),
           ],
         ),
@@ -91,40 +65,13 @@ class _TravelPassPageState extends State<TravelPassPage> {
     );
   }
 
-  // Function to save the selected package to Firebase Firestore
-  void saveSelectedPackageToFirebase(String selectedPackage) {
-    final userPackageCollection = FirebaseFirestore.instance.collection('userPackages');
-
-    // Save the selected package details
-    userPackageCollection.add({
-      'SelectedPackage': selectedPackage,
-      'Cost': getPackageCost(selectedPackage),
-      'Days': getPackageDays(selectedPackage),
-    });
-  }
-
-  // Function to get the cost for a specific package
-  String getPackageCost(String package) {
-    if (package == "Travel Buddy Pass") {
-      return "\$20.00";
-    } else if (package == "Travel Lite Pass") {
-      return "\$45.00";
-    } else if (package == "Travel Max Pass") {
-      return "\$80.00";
-    }
-    return "";
-  }
-
-  // Function to get the days for a specific package
-  String getPackageDays(String package) {
-    if (package == "Travel Buddy Pass") {
-      return "Valid for one day";
-    } else if (package == "Travel Lite Pass") {
-      return "Valid for three days";
-    } else if (package == "Travel Max Pass") {
-      return "Valid for five days";
-    }
-    return "";
+  // Function to navigate to the Payment page
+  void navigateToPaymentPage(String? selectedPass, String cost) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => Payment(selectedPass, cost),
+      ),
+    );
   }
 }
 

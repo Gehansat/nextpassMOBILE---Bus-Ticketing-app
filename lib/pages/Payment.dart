@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
 
 class Payment extends StatelessWidget {
+  final String? selectedPass;
+  final String? passCost;
+
+  Payment(this.selectedPass, this.passCost);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Payment UI",
-      home: PaymentPage(),
-    );
+    return PaymentPage(selectedPass, passCost);
   }
 }
 
 class PaymentPage extends StatelessWidget {
+  final String? selectedPass;
+  final String? passCost;
+
+  PaymentPage(this.selectedPass, this.passCost);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.black,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
         title: Text(
           "Payment",
           style: TextStyle(
@@ -41,16 +37,31 @@ class PaymentPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              PaymentDetailsCard(),
+              PaymentDetailsCard(selectedPass, passCost),
               SizedBox(height: 20),
               PaymentForm(),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   // Add payment processing logic here
-                  
                 },
-                child: Text("Pay"),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "Pay",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -61,6 +72,11 @@ class PaymentPage extends StatelessWidget {
 }
 
 class PaymentDetailsCard extends StatelessWidget {
+  final String? selectedPass;
+  final String? passCost;
+
+  PaymentDetailsCard(this.selectedPass, this.passCost);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -73,14 +89,35 @@ class PaymentDetailsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text("Amount: \$100.00", style: TextStyle(fontSize: 18)),
+          Text("Selected Pass: $selectedPass", style: TextStyle(fontSize: 18)),
           SizedBox(height: 10),
-          Text("Tax: \$10.00", style: TextStyle(fontSize: 18)),
+          Text("Amount: $passCost", style: TextStyle(fontSize: 18)),
           SizedBox(height: 10),
-          Text("Total: \$110.00", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text("Tax: \$5.00", style: TextStyle(fontSize: 18)),
+          SizedBox(height: 10),
+          Text(
+            "Total: ${_calculateTotalCost(passCost)}",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
+  }
+
+  String _calculateTotalCost(String? passCost) {
+    if (passCost != null) {
+      try {
+        final tax = 10.00;
+        final amount = double.parse(passCost);
+        final total = amount + tax;
+        return "\$$total";
+      } catch (e) {
+        // Handle the case where passCost is not a valid double
+        return "Invalid Amount";
+      }
+    } else {
+      return "\$0.00";
+    }
   }
 }
 
