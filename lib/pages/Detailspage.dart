@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -31,59 +30,42 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
         child: ListView(
           padding: EdgeInsets.all(16.0),
           children: [
-            TextFormField(
+            buildTextFormField(
+              label: 'Name',
               controller: nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a name';
-                }
-                return null;
-              },
+              hint: 'Name',
             ),
-            TextFormField(
+            SizedBox(height: 10),
+            buildTextFormField(
+              label: 'Email',
               controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter an email';
-                }
-                return null;
-              },
+              hint: 'Email',
             ),
-            TextFormField(
+            SizedBox(height: 10),
+            buildTextFormField(
+              label: 'Visa Number',
               controller: visaNumberController,
-              decoration: InputDecoration(labelText: 'Visa Number'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a visa number';
-                }
-                return null;
-              },
+              hint: 'Visa Number',
             ),
-            TextFormField(
+            SizedBox(height: 10),
+            buildTextFormField(
+              label: 'Contact Number',
               controller: contactNumberController,
-              decoration: InputDecoration(labelText: 'Contact Number'),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a contact number';
-                }
-                return null;
-              },
+              hint: 'Contact Number',
             ),
             buildDateInput(
-              "Arriving Date",
-              arrivingDate,
-              (date) {
+              hintText: 'Arriving Date',
+              date: arrivingDate,
+              onChanged: (date) {
                 setState(() {
                   arrivingDate = date;
                 });
               },
             ),
             buildDateInput(
-              "Leaving Date",
-              leavingDate,
-              (date) {
+              hintText: 'Leaving Date',
+              date: leavingDate,
+              onChanged: (date) {
                 setState(() {
                   leavingDate = date;
                 });
@@ -95,7 +77,8 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                 if (_formKey.currentState!.validate()) {
                   await addUserDetailsToFirebase();
                   Navigator.of(context).push(
-                    CupertinoPageRoute(builder: (ctx) => TravelPassPage()),);
+                    MaterialPageRoute(builder: (ctx) => TravelPassPage()),
+                  );
                 }
               },
               child: Text('Save User Details'),
@@ -118,7 +101,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     );
 
     // Save user details to Firestore
-    final userDocRef = await userDetailsCollection.add(userDetails.toMap());
+    await userDetailsCollection.add(userDetails.toMap());
 
     // Show a success message
     ScaffoldMessenger.of(context).showSnackBar(
@@ -128,14 +111,14 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
     );
   }
 
-  Widget buildDateInput(String label, DateTime? date, Function(DateTime) onChanged) {
+  Widget buildDateInput({
+    required String hintText,
+    DateTime? date,
+    required Function(DateTime) onChanged,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
         SizedBox(height: 10),
         InkWell(
           onTap: () {
@@ -152,7 +135,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           },
           child: InputDecorator(
             decoration: InputDecoration(
-              hintText: 'Select Date',
+              hintText: hintText,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -163,7 +146,7 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
                 Text(
                   date != null
                       ? "${date.toLocal()}".split(' ')[0]
-                      : 'Select Date',
+                      : hintText,
                   style: TextStyle(fontSize: 16),
                 ),
                 Icon(Icons.calendar_today),
@@ -172,6 +155,35 @@ class _UserDetailsPageState extends State<UserDetailsPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget buildTextFormField({
+    required String label,
+    required TextEditingController controller,
+    required String hint,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.grey),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.blue),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey),
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter $hint';
+        }
+        return null;
+      },
     );
   }
 }
