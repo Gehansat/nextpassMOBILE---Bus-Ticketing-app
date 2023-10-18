@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Payment extends StatelessWidget {
   final String? selectedPass;
@@ -93,7 +94,7 @@ class PaymentDetailsCard extends StatelessWidget {
           SizedBox(height: 10),
           Text("Amount: $passCost", style: TextStyle(fontSize: 18)),
           SizedBox(height: 10),
-          Text("Tax: \$5.00", style: TextStyle(fontSize: 18)),
+          Text("Tax: \$10.00", style: TextStyle(fontSize: 18)),
           SizedBox(height: 10),
           Text(
             "Total: ${_calculateTotalCost(passCost)}",
@@ -104,21 +105,24 @@ class PaymentDetailsCard extends StatelessWidget {
     );
   }
 
-  String _calculateTotalCost(String? passCost) {
-    if (passCost != null) {
-      try {
-        final tax = 10.00;
-        final amount = double.parse(passCost);
-        final total = amount + tax;
-        return "\$$total";
-      } catch (e) {
-        // Handle the case where passCost is not a valid double
-        return "Invalid Amount";
-      }
-    } else {
-      return "\$0.00";
+ String _calculateTotalCost(String? passCost) {
+  if (passCost != null) {
+    try {
+      final tax = 10.00;
+      // Remove the dollar sign and any non-numeric characters
+      final cleanedCost = passCost.replaceAll(RegExp(r'[^0-9.]'), '');
+      final amount = double.parse(cleanedCost);
+      final total = amount + tax;
+
+      final currencyFormatter = NumberFormat.simpleCurrency(decimalDigits: 2);
+      return currencyFormatter.format(total);
+    } catch (e) {
+      return "Invalid Amount";
     }
+  } else {
+    return "\$0.00";
   }
+}
 }
 
 class PaymentForm extends StatelessWidget {
