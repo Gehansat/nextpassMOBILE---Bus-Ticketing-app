@@ -81,7 +81,7 @@ class _TravelPassPageState extends State<TravelPassPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Detailspage(),
+        builder: (context) => DetailsPage(),
       ),
     );
   },

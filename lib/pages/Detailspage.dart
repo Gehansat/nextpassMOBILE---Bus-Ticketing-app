@@ -1,15 +1,34 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nextpass/pages/LoginOption.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nextpass/pages/Passtype.dart';
 
-class Detailspage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Bus Ticket Booking",
-      home: DetailsPage(),
-    );
+class UserDetails {
+  String name;
+  String email;
+  String visaNumber;
+  String contactNumber;
+  DateTime? arrivingDate;
+  DateTime? leavingDate;
+
+  UserDetails({
+    required this.name,
+    required this.email,
+    required this.visaNumber,
+    required this.contactNumber,
+    this.arrivingDate,
+    this.leavingDate,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'visaNumber': visaNumber,
+      'contactNumber': contactNumber,
+      'arrivingDate': arrivingDate,
+      'leavingDate': leavingDate,
+    };
   }
 }
 
@@ -19,6 +38,11 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController visaNumberController = TextEditingController();
+  final TextEditingController contactNumberController = TextEditingController();
   DateTime? arrivingDate;
   DateTime? leavingDate;
 
@@ -26,124 +50,114 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Bus Ticket Booking"),
+        title: Text("User Details"),
         centerTitle: true,
         backgroundColor: Colors.blue,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                "Enter Details",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                  color: Colors.blue,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 20),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      buildTextField("Name", "Sam"),
-                      buildTextField("Email", "abc@gmail.com"),
-                      buildTextField("Visa Number", "1234-5678-1234"),
-                      buildTextField("Contact Number", "xxxxxxxxx"),
-                      buildDateInput("Arriving Date", arrivingDate, (date) {
-                        setState(() {
-                          arrivingDate = date;
-                        });
-                      }),
-                      buildDateInput("Leaving Date", leavingDate, (date) {
-                        setState(() {
-                          leavingDate = date;
-                        });
-                      }),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Loginoption(),
-      ),
-    );
-  },
-  child: Text("Back"),
-),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx) => Passtype()),
-                      );
-                    },
-                    child: ElevatedButton(
-                      onPressed:
-                          null, // Set to null to make the button disabled until tapped
-                      child: Text("Next"),
-                    ),
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildTextField(String label, String hintText) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        TextFormField(
-          decoration: InputDecoration(
-            hintText: hintText,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.black),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: EdgeInsets.all(16.0),
+          children: [
+            TextFormField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Name'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a name';
+                }
+                return null;
+              },
             ),
-          ),
+            TextFormField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter an email';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: visaNumberController,
+              decoration: InputDecoration(labelText: 'Visa Number'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a visa number';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: contactNumberController,
+              decoration: InputDecoration(labelText: 'Contact Number'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a contact number';
+                }
+                return null;
+              },
+            ),
+            buildDateInput(
+              "Arriving Date",
+              arrivingDate,
+              (date) {
+                setState(() {
+                  arrivingDate = date;
+                });
+              },
+            ),
+            buildDateInput(
+              "Leaving Date",
+              leavingDate,
+              (date) {
+                setState(() {
+                  leavingDate = date;
+                });
+              },
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  await addUserDetailsToFirebase();
+                Navigator.of(context).push(
+                  CupertinoPageRoute(builder: (ctx) => Passtype()),
+                );
+                }
+              },
+              
+              child: Text('Save User Details'),
+            ),
+          ],
         ),
-        SizedBox(height: 20),
-      ],
-    );
-  }
-
-  Widget buildButton(String text, {VoidCallback? onPressed}) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      child: Text(text),
-      style: ElevatedButton.styleFrom(
-        primary: Colors.blue, // Button color
       ),
     );
   }
 
-  Widget buildDateInput(
-      String label, DateTime? date, Function(DateTime) onChanged) {
+  Future<void> addUserDetailsToFirebase() async {
+    final userDetailsCollection = FirebaseFirestore.instance.collection('userDetails');
+    final userDetails = UserDetails(
+      name: nameController.text,
+      email: emailController.text,
+      visaNumber: visaNumberController.text,
+      contactNumber: contactNumberController.text,
+      arrivingDate: arrivingDate,
+      leavingDate: leavingDate,
+    );
+
+    await userDetailsCollection.add(userDetails.toMap());
+
+    // Show a success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('User details saved successfully'),
+      ),
+    );
+  }
+
+  Widget buildDateInput(String label, DateTime? date, Function(DateTime) onChanged) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

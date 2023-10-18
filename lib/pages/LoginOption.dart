@@ -50,7 +50,7 @@ class Loginoption extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.of(context).push(
-                  CupertinoPageRoute(builder: (ctx) => Detailspage()),
+                  CupertinoPageRoute(builder: (ctx) => DetailsPage()),
                 );
               },
               child: const Text('Foreigner Passenger'),
