@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nextpass/pages/Home.dart';
+import 'package:nextpass/pages/login/LoginPage.dart';
 
 class Loginoption extends StatelessWidget {
   const Loginoption({super.key});
@@ -30,7 +31,7 @@ class Loginoption extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.of(context).push(
-                  CupertinoPageRoute(builder: (ctx) => HomePage()),
+                  CupertinoPageRoute(builder: (ctx) => LoginPage()),
                 );
 
               },
