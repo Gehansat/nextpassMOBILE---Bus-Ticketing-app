@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nextpass/pages/MakeTrip.dart';
 
+import 'login/AuthService.dart';
+import 'login/LoginPage.dart';
+
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +15,30 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             const SizedBox(height: 20,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Text("Logout",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    // Logout and navigate back to the Login Page
+                    await _authService.signOut();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  },
+                  icon: Icon(Icons.exit_to_app), // Use the exit_to_app icon for logout
+                  iconSize: 30.0, // Adjust the size of the icon as needed
+                ),
+              ],
+            ),
+            // const SizedBox(height: 5,),
             const Text(
               "Welcome",
               style: TextStyle(
