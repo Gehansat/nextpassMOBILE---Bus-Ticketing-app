@@ -39,7 +39,9 @@ class _HomePageState extends State<HomePage> {
         final double balance = double.parse(balanceString);
 
         // Update the balance value
-        setState(() {});
+        setState(() {
+          this.balance = balance.toString();
+        });
       }
     } catch (e) {
       print("Error fetching user data: $e");
@@ -97,8 +99,8 @@ class _HomePageState extends State<HomePage> {
               // Set the background color to blue
               child: Center(
                 child: Text(
-                  'Rs. ${balance}.00', // Display the balance value from the MyUser object
-                  style: TextStyle(
+                  'Rs. ${balance}', // Display the balance value from the MyUser object
+                  style: const TextStyle(
                     color: Colors.white, // Set the text color to white
                     fontSize: 25, // Set the text font size
                     fontWeight: FontWeight.bold, // Set the text font weight
@@ -130,8 +132,8 @@ class _HomePageState extends State<HomePage> {
                     width: 100,
                     height: 100,
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
                         border: Border.all(
                           color: Color(0xffD4E0FF),
                           width: 2.0,
@@ -248,16 +250,16 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(
-                        color: Color(0xffD4E0FF),
-                        width: 2.0,
-                      ) // Set the border radius
-                  ),
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(
+                          color: Color(0xffD4E0FF),
+                          width: 2.0,
+                        ) // Set the border radius
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
