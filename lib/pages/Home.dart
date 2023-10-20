@@ -33,7 +33,10 @@ class _HomePageState extends State<HomePage> {
         final userData = userDoc.data() as Map<String, dynamic>;
 
         // Get the balance field
-        balance = userData['balance'] as String;
+        final String balanceString = userData['balance'] as String;
+
+        // Convert the balance field to a double
+        final double balance = double.parse(balanceString);
 
         // Update the balance value
         setState(() {});
