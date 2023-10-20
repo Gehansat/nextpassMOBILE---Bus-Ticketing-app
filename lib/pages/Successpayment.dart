@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nextpass/pages/QR.dart';
+import 'package:nextpass/pages/QrUI.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -49,7 +49,7 @@ class SuccessfulPaymentScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
   // Add action to navigate to another screen or close this message
-  // Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => QRCodeScreen()));
+   Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => QRScreen()));
 },
                 child: Text("Continue"),
               ),

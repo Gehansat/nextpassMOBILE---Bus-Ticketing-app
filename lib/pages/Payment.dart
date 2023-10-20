@@ -43,24 +43,24 @@ class PaymentPage extends StatelessWidget {
               SizedBox(height: 20),
               PaymentForm(),
               SizedBox(height: 20),
-              // GestureDetector(
-              //    onTap: () {
-              //     // Add payment processing logic here
-              //     // Once the payment is successful, navigate to the Success Message screen
-              //     Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => SuccessfulPaymentScreen()));
-              //   },
-              //   child: Container(
-              //     width: double.infinity,
-              //     padding: EdgeInsets.all(16),
-              //     decoration: BoxDecoration(
-              //       color: Colors.blue,
-              //       borderRadius: BorderRadius.circular(10),
-              //     ),
-              //     child: Center(
-              //       child: Text('Process Payment', style: TextStyle(fontSize: 16)),
-              //     ),
-              //   ),
-              // ),
+              GestureDetector(
+                 onTap: () {
+                  // Add payment processing logic here
+                  // Once the payment is successful, navigate to the Success Message screen
+                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => SuccessfulPaymentScreen()));
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text('Process Payment', style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -169,16 +169,16 @@ class _PaymentFormState extends State<PaymentForm> {
             SizedBox(height: 10),
             buildTextField("Cardholder's Name", "Enter cardholder's name", cardHolderNameController, validateCardHolderName),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  // Form is valid, proceed with payment processing
-                  // Add your payment processing logic here
-                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => SuccessfulPaymentScreen()));
-                }
-              },
-              child: Text('Process Payment', style: TextStyle(fontSize: 16)),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     if (_formKey.currentState!.validate()) {
+            //       // Form is valid, proceed with payment processing
+            //       // Add your payment processing logic here
+            //       Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => SuccessfulPaymentScreen()));
+            //     }
+            //   },
+            //   child: Text('Process Payment', style: TextStyle(fontSize: 16)),
+            // ),
           ],
         ),
       ),
