@@ -1,8 +1,50 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nextpass/pages/MakeTrip.dart';
+import '../models/user_model.dart';
+import 'login/AuthService.dart';
+import 'login/LoginPage.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final AuthService _authService = AuthService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  MyUser? currentUser;
+
+  String balance = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      User? firebaseUser = await _authService.getCurrentUser();
+      if (firebaseUser != null) {
+        // Fetch the user data from Firebase
+        final DocumentSnapshot userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
+        final userData = userDoc.data() as Map<String, dynamic>;
+
+        // Get the balance field
+        final String balanceString = userData['balance'] as String;
+
+        // Convert the balance field to a double
+        final double balance = double.parse(balanceString);
+
+        // Update the balance value
+        setState(() {});
+      }
+    } catch (e) {
+      print("Error fetching user data: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +54,30 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             const SizedBox(height: 20,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Text("Logout",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    // Logout and navigate back to the Login Page
+                    await _authService.signOut();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  },
+                  icon: Icon(Icons.exit_to_app), // Use the exit_to_app icon for logout
+                  iconSize: 30.0, // Adjust the size of the icon as needed
+                ),
+              ],
+            ),
+            // const SizedBox(height: 5,),
             const Text(
               "Welcome",
               style: TextStyle(
@@ -29,9 +95,9 @@ class HomePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0), // Set the border radius
               ),
               // Set the background color to blue
-              child: const Center(
+              child: Center(
                 child: Text(
-                  "Rs. 1500.00", // Your text content
+                  'Rs. ${balance}.00', // Display the balance value from the MyUser object
                   style: TextStyle(
                     color: Colors.white, // Set the text color to white
                     fontSize: 25, // Set the text font size
