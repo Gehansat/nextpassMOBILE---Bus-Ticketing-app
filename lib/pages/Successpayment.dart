@@ -17,7 +17,7 @@ class SuccessfulPaymentScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Successful Payment"),
-        backgroundColor: const Color(0xff0048FF), // Customize the app bar color
+        backgroundColor: Colors.blue, // Customize the app bar color
       ),
       body: Container(
         color: Colors.white, // Customize the background color
@@ -27,7 +27,7 @@ class SuccessfulPaymentScreen extends StatelessWidget {
             children: <Widget>[
               Icon(
                 Icons.check_circle,
-                color: const Color(0xff0048FF),
+                color: Colors.blue,
                 size: 100.0,
               ),
               SizedBox(height: 20.0),

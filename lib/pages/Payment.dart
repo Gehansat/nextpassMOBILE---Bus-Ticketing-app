@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:intl/intl.dart';
 import 'package:nextpass/pages/Successpayment.dart';
+import 'package:nextpass/pages/pay.dart';
+import 'constants.dart';
 
 class Payment extends StatelessWidget {
   final String? selectedPass;
@@ -43,24 +46,81 @@ class PaymentPage extends StatelessWidget {
               SizedBox(height: 20),
               PaymentForm(),
               SizedBox(height: 20),
-              GestureDetector(
-                 onTap: () {
-                  // Add payment processing logic here
-                  // Once the payment is successful, navigate to the Success Message screen
-                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => SuccessfulPaymentScreen()));
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text('Process Payment', style: TextStyle(fontSize: 16)),
-                  ),
-                ),
-              ),
+              
+             Row(
+    children: <Widget>[
+   ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => UsePaypal(
+                              sandboxMode: true,
+                              clientId: "${Constants.clientId}",
+                              secretKey: "${Constants.secretKey}",
+                              returnURL: "${Constants.returnURL}",
+                              cancelURL: "${Constants.cancelURL}",
+                              transactions: const [
+                                {
+                                  "amount": {
+                                    "total": '55',
+                                    "currency": "USD",
+                                    "details": {
+                                      "subtotal": '55',
+                                                                      }
+                                  },
+                                  "description":
+                                      "The payment transaction description.",
+                                  // "payment_options": {
+                                  //   "allowed_payment_method":
+                                  //       "INSTANT_FUNDING_SOURCE"
+                                  // },
+                                  "item_list": {
+                                    "items": [
+                                      {
+                                        "name": "A demo product",
+                                        "quantity": 1,
+                                        "price": '55',
+                                        "currency": "USD"
+                                      }
+                                    ],
+
+                                    // shipping address is not required though
+                                    "shipping_address": {
+                                      "recipient_name": "Jane Foster",
+                                      "line1": "Travis County",
+                                      "line2": "",
+                                      "city": "Austin",
+                                      "country_code": "US",
+                                      "postal_code": "73301",
+                                      "phone": "+00000000",
+                                      "state": "Texas"
+                                    },
+                                  }
+                                }
+                              ],
+                              note:
+                                  "Contact us for any questions on your order.",
+                              onSuccess: (Map params) async {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        SuccessfulPaymentScreen(),
+                                  ),
+                                );
+                              },
+                              onError: (error) {
+                                print("onError: $error");
+                              },
+                              onCancel: (params) {
+                                print('cancelled: $params');
+                              }),
+                        ),
+                      );
+                    },
+                    child: const Text('Pay With PayPal'))
+  ],
+)
+
             ],
           ),
         ),
@@ -169,6 +229,7 @@ class _PaymentFormState extends State<PaymentForm> {
             SizedBox(height: 10),
             buildTextField("Cardholder's Name", "Enter cardholder's name", cardHolderNameController, validateCardHolderName),
             SizedBox(height: 20),
+            
             // ElevatedButton(
             //   onPressed: () {
             //     if (_formKey.currentState!.validate()) {
