@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nextpass/pages/MakeTrip.dart';
+import 'package:nextpass/pages/PaymentBalance.dart';
 import '../models/user_model.dart';
 import 'login/AuthService.dart';
 import 'login/LoginPage.dart';
@@ -162,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const MakeTrip()), // Replace with the page you want to navigate to
+                      MaterialPageRoute(builder: (context) => PaymentBalance()), // Replace with the page you want to navigate to
                     );
                   },
                   child: Container(
