@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
               // Set the background color to blue
               child: Center(
                 child: Text(
-                  'Rs. ${balance}', // Display the balance value from the MyUser object
+                  'Rs. $balance', // Display the balance value from the MyUser object
                   style: const TextStyle(
                     color: Colors.white, // Set the text color to white
                     fontSize: 25, // Set the text font size

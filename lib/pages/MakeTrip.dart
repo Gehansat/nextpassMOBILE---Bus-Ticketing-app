@@ -1,7 +1,9 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:math';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'login/AuthService.dart';
 class MakeTrip extends StatefulWidget {
   const MakeTrip({Key? key}) : super(key: key);
 
@@ -12,7 +14,9 @@ class MakeTrip extends StatefulWidget {
 class _MakeTripState extends State<MakeTrip> {
   String? selectedStartingPoint = 'Starting Point';
   String? selectedEndingPoint = 'Ending Point';
+  String? qrCodeData;
   int? fee; // to store the randomly retrieved fee
+
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +100,7 @@ class _MakeTripState extends State<MakeTrip> {
               ),
             ),
             const SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: const Color(0xff0048FF),
@@ -142,10 +147,59 @@ class _MakeTripState extends State<MakeTrip> {
               child: const Text('Calculate Fee'),
             ),
             const SizedBox(height: 20),
-            Text("Your Fee is: ${fee ?? 'Select starting and ending points'}")
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: const Color(0xff0048FF),
+                onPrimary: Colors.white,
+                fixedSize: const Size(245, 60),
+                textStyle: const TextStyle(fontSize: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              onPressed: () {
+                updateQRCode(selectedStartingPoint ?? 'Starting Point', selectedEndingPoint ?? 'Ending Point');
+              },
+              child: const Text('Update QR Code'),
+            ),
+            const SizedBox(height: 20),
+            Text("Updated QR Code will be displayed here: $fee"),
+            if (qrCodeData != null)
+              QrImageView(
+                data: qrCodeData!,
+                version: QrVersions.auto,
+                size: 200.0,
+              ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> updateQRCode(String startingPoint, String endingPoint) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userData = {
+        "email": user.email,
+        "startpoint": startingPoint,
+        "endpoint": endingPoint,
+        "fee": fee ?? 0,
+      };
+
+      // Update the Firestore document with the new data
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set(userData, SetOptions(merge: true));
+
+      // Update the QR code data
+      qrCodeData = "data:image/png;base64,${generateQRCode(userData.toString())}";
+      setState(() {});
+    }
+  }
+
+  String generateQRCode(String data) {
+    // You can use a QR code library like 'qr_flutter' to generate a QR code
+    return data;
   }
 }
