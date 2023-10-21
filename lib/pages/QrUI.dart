@@ -91,10 +91,10 @@ class _QRScreenState extends State<QRScreen> {
                 ),
               ),
             ),
-            Text(
-              'Pass Type Details: $passTypeDetails',
-              style: TextStyle(fontSize: 16),
-            ),
+            // Text(
+            //   'Pass Type Details: $passTypeDetails',
+            //   style: TextStyle(fontSize: 16),
+            // ),
           ],
         ),
       ),
