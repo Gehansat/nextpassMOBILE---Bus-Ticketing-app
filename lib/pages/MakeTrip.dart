@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'Qrcodepage.dart';
 import 'login/AuthService.dart';
 class MakeTrip extends StatefulWidget {
   const MakeTrip({Key? key}) : super(key: key);
@@ -147,6 +148,13 @@ class _MakeTripState extends State<MakeTrip> {
               child: const Text('Calculate Fee'),
             ),
             const SizedBox(height: 20),
+            Text("Your fee for the trip is: $fee",
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 20),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: const Color(0xff0048FF),
@@ -163,7 +171,35 @@ class _MakeTripState extends State<MakeTrip> {
               child: const Text('Update QR Code'),
             ),
             const SizedBox(height: 20),
-            Text("Updated QR Code will be displayed here: $fee"),
+            if (qrCodeData != null)
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: const Color(0xff0048FF),
+                  onPrimary: Colors.white,
+                  fixedSize: const Size(245, 60),
+                  textStyle: const TextStyle(fontSize: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => QRCodePage(qrCodeData!),
+                    ),
+                  );
+                },
+                child: const Text('View QR Code'),
+              ),
+            const SizedBox(height: 20),
+            const Text("Updated QR Code will be displayed here:", textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 20),
             if (qrCodeData != null)
               QrImageView(
                 data: qrCodeData!,
@@ -199,7 +235,7 @@ class _MakeTripState extends State<MakeTrip> {
   }
 
   String generateQRCode(String data) {
-    // You can use a QR code library like 'qr_flutter' to generate a QR code
+
     return data;
   }
 }
