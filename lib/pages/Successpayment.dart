@@ -48,8 +48,8 @@ class SuccessfulPaymentScreen extends StatelessWidget {
               SizedBox(height: 30.0),
               ElevatedButton(
                 onPressed: () {
-  // Add action to navigate to another screen or close this message
-   Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => QRScreen()));
+                    // Add action to navigate to another screen or close this message
+                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => QRScreen()));
 },
                 child: Text("Continue"),
               ),

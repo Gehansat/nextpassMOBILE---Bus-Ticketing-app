@@ -3,6 +3,7 @@ import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:intl/intl.dart';
 import 'package:nextpass/pages/Successpayment.dart';
 import 'package:nextpass/pages/pay.dart';
+import 'QrUI.dart';
 import 'constants.dart';
 
 class Payment extends StatelessWidget {
@@ -48,8 +49,8 @@ class PaymentPage extends StatelessWidget {
               SizedBox(height: 20),
               
              Row(
-    children: <Widget>[
-   ElevatedButton(
+                children: <Widget>[
+                ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
@@ -117,8 +118,17 @@ class PaymentPage extends StatelessWidget {
                         ),
                       );
                     },
-                    child: const Text('Pay With PayPal'))
-  ],
+                    child: const Text('Pay With PayPal')),
+                    const SizedBox(width: 140),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Add action to navigate to another screen or close this message
+                        Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => QRScreen()));
+                      },
+                      child: Text("Continue"),
+                    ),
+            ],
+
 )
 
             ],
